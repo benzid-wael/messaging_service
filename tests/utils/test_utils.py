@@ -24,4 +24,8 @@ class TestLoader:
     def test_nomodule_noclass(self):
         with pytest.raises(ImportError):
             load_class("service.handlers.no_such_module.NoModule")
+
+    def test_no_dotted_path(self):
+        with pytest.raises(AttributeError):
+            load_class("NoModule")
         
