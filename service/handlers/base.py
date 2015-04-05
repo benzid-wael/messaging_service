@@ -5,8 +5,6 @@ class BaseHandler(object):
 
     message_type = None
 
-    def __init__(self, filter_class
-
     def accept(self, message):
         return message['type'] == self.message_type
 
