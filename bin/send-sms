@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+import pika
+import json
+
+
+QUEUE_NAME = 'messaging_service'
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+channel.queue_declare(queue=QUEUE_NAME)
+
+message = {
+    'type': 'sms',
+    'from': 'JRD',
+    'recipients': ['+971501478902'],
+    'body': 'Test SMS message body',
+}
+
+channel.basic_publish(exchange='', routing_key=QUEUE_NAME,
+                      body=json.dumps(message))

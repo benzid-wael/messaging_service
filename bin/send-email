@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+
+import pika
+import json
+
+
+QUEUE_NAME = 'messaging_service'
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+channel.queue_declare(queue=QUEUE_NAME)
+
+message = {
+    'type': 'email',
+    'from': 'no-reply@company.com',
+    'recipients': ['test1@test.com', 'test2@test.com'],
+    'html': 'This is a test email. It can <i>also</i> contain HTML code',
+    'text': 'This is a test email. It is text only'
+}
+
+channel.basic_publish(exchange='', routing_key=QUEUE_NAME,
+                      body=json.dumps(message))
