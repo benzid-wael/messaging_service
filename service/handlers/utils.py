@@ -6,7 +6,7 @@ from service import settings
 def load_class(name):
     """
     load the class defined by dotted path if possible, or raise an error.
-    
+
     :raises ImportError: raise ImportError if we can not load the base module
     :raises AttributeError: raise AttributeError if the base module does not
     have the requested class.
@@ -31,4 +31,3 @@ def load_handlers():
             handler.filter = filter_instance
         handlers[message_type] = handler
     return handlers
-    

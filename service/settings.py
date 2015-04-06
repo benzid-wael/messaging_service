@@ -4,7 +4,7 @@ MESSAGE_QUEUE = {
     'HOST': 'localhost',
     'NAME': 'messaging_service',
     'handlers': {
-        'sms' : {
+        'sms': {
             'class': 'service.handlers.SMSHandler',
             'filter': {
                 'class': 'service.handlers.filters.WindowTimeFilter',

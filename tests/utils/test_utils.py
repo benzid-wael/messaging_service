@@ -28,4 +28,3 @@ class TestLoader:
     def test_no_dotted_path(self):
         with pytest.raises(AttributeError):
             load_class("NoModule")
-        

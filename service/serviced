@@ -4,7 +4,7 @@ import pika
 import settings
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host=settings.MESSAGE_QUEUE['HOST']))
+    host=settings.MESSAGE_QUEUE['HOST']))
 channel = connection.channel()
 
 QUEUE_NAME = settings.MESSAGE_QUEUE['NAME']
@@ -12,6 +12,7 @@ QUEUE_NAME = settings.MESSAGE_QUEUE['NAME']
 channel.queue_declare(queue=QUEUE_NAME)
 
 print ' [*] Waiting for messages. To exit press CTRL+C'
+
 
 def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
