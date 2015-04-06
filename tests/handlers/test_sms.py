@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from service.handlers import SMSHandler
 
 
@@ -17,3 +19,12 @@ def test_good_records(capsys):
     handler.emit(msg)
     out, err = capsys.readouterr()
     assert err == expected
+
+
+def test_bad_record():
+    msg = {
+        'type': 'sms',
+    }
+    handler = SMSHandler()
+    with pytest.raises(KeyError):
+        handler.emit(msg)
