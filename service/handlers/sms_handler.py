@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 import sys
 
@@ -14,5 +15,5 @@ class SMSHandler(BaseHandler):
         self.stream = stream or sys.stderr
 
     def emit(self, record):
-        self.stream.write("-> SMS message %r sended to %s" % (
-                            record['body'], record['recipients']))
+        print("-> SMS message %r sended to %s" % (
+            record['body'], record['recipients']), file=self.stream)
