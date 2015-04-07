@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+
 class BaseHandler(object):
+
     """ All message handler should extend BaseHandler class. """
 
     message_type = None

@@ -5,6 +5,7 @@ import re
 
 
 class BaseFilter(object):
+
     """ All message handler's filter should extend this class. """
 
     def filter(self, message):
@@ -18,7 +19,8 @@ class WindowTimeFilter(BaseFilter):
     defined by `from_time` and `to_time`.
     """
 
-    TIME_RE = re.compile(r'^(?P<hour>([0-9]|0[0-9]|1?[0-9]|2[0-3])):(?P<minute>[0-5]?[0-9])$')
+    TIME_RE = re.compile(
+        r'^(?P<hour>([0-9]|0[0-9]|1?[0-9]|2[0-3])):(?P<minute>[0-5]?[0-9])$')
 
     def __init__(self, from_time, to_time):
         self.from_time = from_time
