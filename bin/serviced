@@ -2,8 +2,8 @@
 
 """
 Basic implementation for messaging service daemon. This daemon is responsible
-for fetch messages from the message queue and dispatch them to the concerened
-handler according to message `type` filed.
+of fetching messages from the message queue and dispatch them to the concerned
+handler according to message `type` field.
 
 """
 
