@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+import socket
+import smtplib
+
+from service import settings
+
 from service.handlers.email_handler import EmailHandler
 
 
@@ -8,7 +14,7 @@ class FakeEmailHandler(EmailHandler):
     def __init__(self, *args, **kwargs):
         super(FakeEmailHandler, self).__init__(*args, **kwargs)
 
-    def sendmail(self, from_addr, to_addrs, msg):
+    def sendmail(self, from_addr, to_addrs, msg, silent=True):
         return 'OK'
 
 
@@ -47,3 +53,46 @@ From: Author <no-reply@company.com>
 
 This is a test email. It is text only"""
         assert result == expected
+
+
+def test_success_emit():
+    handler = EmailHandler(debuglevel=False)
+    record = {
+        'type': 'email',
+        'from': 'no-reply@company.com',
+        'recipients': ['test1@test.com', 'test2@test.com'],
+        'html': 'This is a test email. It can <i>also</i> contain HTML code',
+        'text': 'This is a test email. It is text only'
+    }
+    result = handler.emit(record, silent=False)
+    assert result == None
+
+
+def test_bad_host(monkeypatch):
+    monkeypatch.setattr(settings, 'EMAIL_HOST', 'nohost.jrd.com')
+
+    handler = EmailHandler(debuglevel=False)
+    record = {
+        'type': 'email',
+        'from': 'no-reply@company.com',
+        'recipients': ['test1@test.com', 'test2@test.com'],
+        'html': 'This is a test email. It can <i>also</i> contain HTML code',
+        'text': 'This is a test email. It is text only'
+    }
+    with pytest.raises(socket.gaierror):
+        handler.emit(record, silent=False)
+
+
+def test_bad_user(monkeypatch):
+    monkeypatch.setattr(settings, 'EMAIL_HOST_USER', 'wael')
+
+    handler = EmailHandler(debuglevel=False)
+    record = {
+        'type': 'email',
+        'from': 'no-reply@company.com',
+        'recipients': ['test1@test.com', 'test2@test.com'],
+        'html': 'This is a test email. It can <i>also</i> contain HTML code',
+        'text': 'This is a test email. It is text only'
+    }
+    with pytest.raises(smtplib.SMTPAuthenticationError):
+        handler.emit(record, silent=False)
