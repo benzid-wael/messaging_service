@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 MESSAGE_QUEUE = {
     'HOST': 'localhost',
     'NAME': 'messaging_service',
@@ -9,8 +10,8 @@ MESSAGE_QUEUE = {
             'filter': {
                 'class': 'service.handlers.filters.WindowTimeFilter',
                 'extra': {
-                    'from': '18:00',
-                    'to': '06:00',
+                    'from_time': '18:00',
+                    'to_time': '06:00',
                 }
             },
         },
