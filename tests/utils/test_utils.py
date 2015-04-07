@@ -2,7 +2,7 @@
 
 import pytest
 
-from service.handlers.utils import load_class
+from service.handlers.utils import load_class, load_handlers
 from service.handlers.base import BaseHandler
 
 
@@ -28,3 +28,35 @@ class TestLoader:
     def test_no_dotted_path(self):
         with pytest.raises(AttributeError):
             load_class("NoModule")
+
+
+class FakeSettings(object):
+    def __init__(self, settings):
+        self.MESSAGE_QUEUE = settings
+
+
+class TestLoadHandlers:
+
+    settings_cases = (
+        ({}, KeyError),
+        ({'handlers': {}}, {}),
+        ({'handlers': {'sms': {'class': 'service.handlers.NoHandler'}}},
+         AttributeError),
+        ({'handlers': {'sms': {'class': 'service.no_module.NoHandler'}}},
+         ImportError),
+        ({'handlers': {'sms': {'class': 'tests.utils.fake_handler.MyHandler'}}},
+         {'sms': BaseHandler}),
+    )
+
+    def test_simple_cases(self):
+        for case, expected in self.settings_cases:
+            try:
+                my_setting = FakeSettings(case)
+                result = load_handlers(my_setting)
+                for k, expected_class in expected.items():
+                    assert isinstance(result[k], expected_class)
+            except AssertionError:
+                raise
+            except Exception as e:
+                assert isinstance(e, expected)
+
