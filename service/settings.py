@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+DEBUG = False
+
 # SMTP authentication information
 EMAIL_HOST = 'mailtrap.io'
 EMAIL_PORT = '2525'
