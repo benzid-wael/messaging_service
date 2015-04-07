@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+"""
+Basic implementation for messaging service daemon. This daemon is responsible
+for fetch messages from the message queue and dispatch them to the concerened
+handler according to message `type` filed.
+
+"""
+
 import pika
 import logging
 import json
@@ -54,4 +61,4 @@ try:
     channel.basic_consume(callback, queue=QUEUE_NAME, no_ack=True)
     channel.start_consuming()
 except KeyboardInterrupt:
-    print "* Shutdown messaging service: OK"
+    print "\n* Shutdown messaging service: OK"
