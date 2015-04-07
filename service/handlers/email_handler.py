@@ -28,12 +28,12 @@ class EmailHandler(BaseHandler):
         self.debuglevel = debuglevel or settings.DEBUG
         self.test = test
 
-    def emit(self, record):
+    def emit(self, record, silent=True):
         subject = record.get('subject', 'Notification')
         from_addr = record['from']
         to_addrs = record['recipients']
         body = self.prepare(subject, from_addr, to_addrs, record['text'])
-        self.sendmail(from_addr, to_addrs, body)
+        self.sendmail(from_addr, to_addrs, body, silent)
         if self.test:
             return body
 
@@ -43,7 +43,7 @@ class EmailHandler(BaseHandler):
         msg['From'] = email.utils.formataddr(('Author', from_addr))
         return msg.as_string()
 
-    def sendmail(self, from_addr, to_addrs, msg):
+    def sendmail(self, from_addr, to_addrs, msg, silent=True):
         server = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
         try:
             server.set_debuglevel(self.debuglevel)
