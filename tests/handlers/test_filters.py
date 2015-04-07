@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import datetime
-import pytest
 
-from freezegun import freeze_time # $ pip install freezegun
+from freezegun import freeze_time  # $ pip install freezegun
 
 from service.handlers import filters
 
@@ -69,4 +67,3 @@ class TestWindowTimeFilter:
             freezer.start()
             assert filter_window.filter(record) == expected
             freezer.stop()
-        

@@ -5,3 +5,7 @@ from service.handlers.base import BaseHandler
 
 class MyHandler(BaseHandler):
     pass
+
+
+class BadHandler(object):
+    pass

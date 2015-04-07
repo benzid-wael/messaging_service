@@ -2,6 +2,7 @@
 
 import pytest
 
+from service.exceptions import ImproperlyConfigured
 from service.utils import load_class, load_handlers
 from service.handlers.base import BaseHandler
 
@@ -62,3 +63,12 @@ class TestLoadHandlers:
             except Exception as e:
                 assert isinstance(e, expected)
 
+    def test_bad_handler(self):
+        handler_setting = {
+            'handlers': {
+                'sms': {'class': 'tests.utils.fake_handler.BadHandler'}
+            }
+        }
+        my_setting = FakeSettings(handler_setting)
+        with pytest.raises(ImproperlyConfigured):
+            load_handlers(my_setting)
