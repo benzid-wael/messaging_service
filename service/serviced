@@ -6,7 +6,7 @@ import logging
 import json
 import gevent
 
-from handlers import utils
+from service import utils
 
 
 logging.basicConfig(level=logging.ERROR)

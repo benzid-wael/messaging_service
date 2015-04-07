@@ -2,7 +2,7 @@
 
 import pytest
 
-from service.handlers.utils import load_class, load_handlers
+from service.utils import load_class, load_handlers
 from service.handlers.base import BaseHandler
 
 
@@ -44,8 +44,10 @@ class TestLoadHandlers:
          AttributeError),
         ({'handlers': {'sms': {'class': 'service.no_module.NoHandler'}}},
          ImportError),
-        ({'handlers': {'sms': {'class': 'tests.utils.fake_handler.MyHandler'}}},
-         {'sms': BaseHandler}),
+        (
+            {'handlers': {
+                'sms': {'class': 'tests.utils.fake_handler.MyHandler'}}},
+            {'sms': BaseHandler}),
     )
 
     def test_simple_cases(self):
