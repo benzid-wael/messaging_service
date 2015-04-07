@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+# SMTP authentication information
+EMAIL_HOST = 'mailtrap.io'
+EMAIL_PORT = '2525'
+EMAIL_HOST_USER = '32897a27018e9d185'
+EMAIL_HOST_PASSWORD = '51cc1e99f8a129'
+
 
 MESSAGE_QUEUE = {
     'HOST': 'localhost',
