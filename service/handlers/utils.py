@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from service import settings
+from service import settings as global_settings
 
 
 def load_class(name):
@@ -17,15 +17,17 @@ def load_class(name):
     return getattr(module, parts[-1])
 
 
-def load_handlers():
+def load_handlers(settings=None):
     """ Load an initialized copy of message handlers. """
     handlers = {}
-    for message_type, handler_config in settings.MESSAGE_QUEUE['handlers']:
-        handler_cls = load_class(handler_config['class'])
+    if not settings:
+        settings = global_settings
+    for message_type, handler_cfg in settings.MESSAGE_QUEUE['handlers'].items():
+        handler_cls = load_class(handler_cfg['class'])
         handler = handler_cls()
-        filtler_config = handler_config.get('filter', None)
+        filtler_config = handler_cfg.get('filter', None)
         if filtler_config:
-            filter_cls = filtler_config['class']
+            filter_cls = load_class(filtler_config['class'])
             filter_kwargs = filtler_config.get('extra', {})
             filter_instance = filter_cls(**filter_kwargs)
             handler.filter = filter_instance
