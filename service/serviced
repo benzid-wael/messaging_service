@@ -2,20 +2,55 @@
 
 import pika
 import settings
+import logging
+import json
+import gevent
+
+from handlers import utils
+
+
+logging.basicConfig(level=logging.ERROR)
+
+
+QUEUE_NAME = settings.MESSAGE_QUEUE['NAME']
+_logger = logging.getLogger("messaging_service")
+
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
     host=settings.MESSAGE_QUEUE['HOST']))
 channel = connection.channel()
 
-QUEUE_NAME = settings.MESSAGE_QUEUE['NAME']
-
 channel.queue_declare(queue=QUEUE_NAME)
+
+handlers = utils.load_handlers()
 
 print ' [*] Waiting for messages. To exit press CTRL+C'
 
 
 def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
+    message = json.loads(body)
+    try:
+        handler = handlers[message['type']]
+    except KeyError:
+        if 'type' in message:
+            _logger.error(
+                "No handler found for `{}` message.".format(message['type']))
+        else:
+            _logger.error("Bad message `{}`".format(body))
+    if hasattr(handler, "filter") and not handler.filter.filter(message):
+        return
+
+    def run_handler(handler):
+        handler.emit(message)
+
+    thread = gevent.spawn(run_handler, handler)
+    # gevent.sleep(0)
+    try:
+        thread.get()
+    except:
+        pass
+
 
 channel.basic_consume(callback, queue=QUEUE_NAME, no_ack=True)
 channel.start_consuming()
