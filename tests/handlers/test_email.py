@@ -36,7 +36,7 @@ From: Author <none@jrd.com>
 Just a test"""
         assert result == expected
 
-    def test_emit(self):
+    def test_emit_just_text(self):
         record = {
             'type': 'email',
             'from': 'no-reply@company.com',
@@ -44,7 +44,7 @@ Just a test"""
             'html': 'This is a test email. It can <i>also</i> contain HTML code',
             'text': 'This is a test email. It is text only'
         }
-        result = self.handler.emit(record)
+        result = self.handler.emit(record, include_html=False)
         expected = """Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -53,6 +53,25 @@ From: Author <no-reply@company.com>
 
 This is a test email. It is text only"""
         assert result == expected
+
+    def test_html_msg(self):
+        record = {
+            'type': 'email',
+            'from': 'no-reply@company.com',
+            'recipients': ['test1@test.com', 'test2@test.com'],
+            'html': 'This is a test email. It can <i>also</i> contain HTML code',
+            'text': 'This is a test email. It is text only'
+        }
+        result = self.handler.emit(record, include_html=True)
+        expected_parts = (
+            "Content-Type: multipart/alternative;",
+            "To: Recipient <test1@test.com,test2@test.com>",
+            "From: Author <no-reply@company.com>",
+            "This is a test email. It is text only",
+            "This is a test email. It can <i>also</i> contain HTML code",
+        )
+        for expected_part in expected_parts:
+            assert expected_part in result
 
 
 def test_success_emit():
