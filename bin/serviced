@@ -22,15 +22,15 @@ QUEUE_NAME = settings.MESSAGE_QUEUE['NAME']
 _logger = logging.getLogger("messaging_service")
 
 
+# Connect to the broker
 connection = pika.BlockingConnection(pika.ConnectionParameters(
     host=settings.MESSAGE_QUEUE['HOST']))
 channel = connection.channel()
 
 channel.queue_declare(queue=QUEUE_NAME)
 
+# Loading defined handlers in settings.py
 handlers = utils.load_handlers()
-
-print ' [*] Waiting for messages. To exit press CTRL+C'
 
 
 def callback(ch, method, properties, body):
@@ -56,6 +56,9 @@ def callback(ch, method, properties, body):
         thread.get()
     except:
         pass
+
+
+print ' [*] Waiting for messages. To exit press CTRL+C'
 
 try:
     channel.basic_consume(callback, queue=QUEUE_NAME, no_ack=True)
