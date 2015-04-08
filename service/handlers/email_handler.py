@@ -70,9 +70,10 @@ class EmailHandler(BaseHandler):
             # If we can encrypt this session, do it
             if server.has_extn('STARTTLS'):
                 server.starttls()
-                server.ehlo() # re-identify ourselves over TLS connection
+                server.ehlo()  # re-identify ourselves over TLS connection
 
-            server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            server.login(
+                settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
             server.sendmail(from_addr, to_addrs, msg)
         except Exception as e:
             if not silent:
