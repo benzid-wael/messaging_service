@@ -7,6 +7,7 @@ import smtplib
 import email.utils
 
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from service import settings
 
@@ -28,17 +29,32 @@ class EmailHandler(BaseHandler):
         self.debuglevel = debuglevel or settings.DEBUG
         self.test = test
 
-    def emit(self, record, silent=True):
+    def emit(self, record, silent=True, include_html=True):
         subject = record.get('subject', 'Notification')
         from_addr = record['from']
         to_addrs = record['recipients']
-        body = self.prepare(subject, from_addr, to_addrs, record['text'])
+        html_record = include_html and record['html']
+        body = self.prepare(subject, from_addr, to_addrs, record['text'],
+                            html_record)
         self.sendmail(from_addr, to_addrs, body, silent)
         if self.test:
             return body
 
-    def prepare(self, subject, from_addr, recipients, msg):
-        msg = MIMEText(msg)
+    def prepare(self, subject, from_addr, recipients, text, html=None):
+        if html:
+            msg = MIMEMultipart('alternative')
+            # Record the MIME types of both parts - text/plain and text/html.
+            part1 = MIMEText(text, 'plain')
+            part2 = MIMEText(html, 'html')
+
+            # Attach parts into message container.
+            # According to RFC 2046, the last part of a multipart message, in this case
+            # the HTML message, is best and preferred.
+            msg.attach(part1)
+            msg.attach(part2)
+        else:
+            msg = MIMEText(text)
+
         msg['To'] = email.utils.formataddr(('Recipient', ','.join(recipients)))
         msg['From'] = email.utils.formataddr(('Author', from_addr))
         return msg.as_string()
