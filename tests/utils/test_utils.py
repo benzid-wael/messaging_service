@@ -32,6 +32,7 @@ class TestLoader:
 
 
 class FakeSettings(object):
+
     def __init__(self, settings):
         self.MESSAGE_QUEUE = settings
 
