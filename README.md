@@ -16,3 +16,7 @@ This is a simple messaging service written in Python that reads incoming message
 * Python 3 support
 * Refactoring of the messaging service (adding cli, etc.)
 * Support of different SMS APIs such as Twilio, BulkSMS, etc.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/benzid-wael/messaging_service/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
