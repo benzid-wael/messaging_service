@@ -2,8 +2,8 @@
 
 from service.exceptions import ImproperlyConfigured
 from service import settings as global_settings
-from service.handlers.base import BaseHandler
-from service.handlers.filters import BaseFilter
+from service.handlers import base
+from service.handlers import filters
 
 
 def load_class(name):
@@ -27,13 +27,13 @@ def load_handlers(settings=None):
         settings = global_settings
     for message_type, handler_cfg in settings.MESSAGE_QUEUE['handlers'].items():
         handler_cls = load_class(handler_cfg['class'])
-        if not issubclass(handler_cls, BaseHandler):
+        if not issubclass(handler_cls, base.BaseHandler):
             raise ImproperlyConfigured("Bad handler: %r" % handler_cls)
         handler = handler_cls()
         filtler_config = handler_cfg.get('filter', None)
         if filtler_config:
             filter_cls = load_class(filtler_config['class'])
-            if not issubclass(filter_cls, BaseFilter):
+            if not issubclass(filter_cls, filters.BaseFilter):
                 raise ImproperlyConfigured("Bad filter: %r" % filter_cls)
             filter_kwargs = filtler_config.get('extra', {})
             filter_instance = filter_cls(**filter_kwargs)
