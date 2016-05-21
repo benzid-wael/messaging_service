@@ -47,6 +47,7 @@ setup(
     license="BSD",
     zip_safe=False,
     test_suite='tests',
+    scripts=['bin/messaging-service'],
     tests_require=test_requirements,
     cmdclass={'test': MessagingServiceTest},
 )
